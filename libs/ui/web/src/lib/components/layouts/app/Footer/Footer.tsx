@@ -14,9 +14,15 @@ interface FooterProps {
 export const Footer: FC<FooterProps> = (props) => {
   return (
     <div className={cnFooter(undefined, [props.className])}>
-      <ButtonComponent to={'/'}>1</ButtonComponent>
-      <CentralButton to={'/'} className={cnFooter('CentralButton')} />
-      <ButtonComponent to={'/'}>3</ButtonComponent>
+      <ButtonComponent className={cnFooter('Button')} to={'/'}>
+        1
+      </ButtonComponent>
+      <div className={cnFooter('CentralButton')}>
+        <CentralButton to={'/'} />
+      </div>
+      <ButtonComponent className={cnFooter('Button')} to={'/'}>
+        3
+      </ButtonComponent>
     </div>
   );
 };
