@@ -1,0 +1,18 @@
+.Footer {
+  height: 6rem;
+  background: var(--green-2);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 0 1.6rem;
+
+  position: relative;
+
+  &-CentralButton {
+    position: relative;
+
+    top: -50%;
+  }
+}

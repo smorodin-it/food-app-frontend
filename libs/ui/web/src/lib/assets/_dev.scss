@@ -1,0 +1,8 @@
+* {
+  box-shadow: 0 0 1px #f00 !important;
+  background: green;
+  &:before,
+  &:after {
+    box-shadow: 0 0 1px #f00 !important;
+  }
+}

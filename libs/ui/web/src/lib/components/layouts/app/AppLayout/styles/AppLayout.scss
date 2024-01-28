@@ -1,0 +1,12 @@
+@use '../../../../../assets/main';
+
+.AppLayout {
+  display: flex;
+  flex-direction: column;
+  height: 100svh;
+
+  &-Main {
+    flex-grow: 1;
+    background: var(--green-1);
+  }
+}
