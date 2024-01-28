@@ -5,8 +5,9 @@ import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 import process from 'process';
 import { ENV_MODE_CONST } from './src/app/constants/constants';
 import { DEV_ENV_SCHEMA } from './src/app/models/EnvModel';
+import viteBasicSslPlugin from '@vitejs/plugin-basic-ssl';
 
-export default defineConfig(({mode}) => {
+export default defineConfig(({ mode }) => {
   let proxy: Record<string, string | ProxyOptions> | undefined;
 
   if (mode === ENV_MODE_CONST.development) {
@@ -42,7 +43,7 @@ export default defineConfig(({mode}) => {
       host: 'localhost',
     },
 
-    plugins: [react(), nxViteTsPaths()],
+    plugins: [react(), viteBasicSslPlugin(), nxViteTsPaths()],
 
     // Uncomment this if you are using workers.
     // worker: {
@@ -71,5 +72,5 @@ export default defineConfig(({mode}) => {
         provider: 'v8',
       },
     },
-  }
+  };
 });
