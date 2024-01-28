@@ -1,49 +1,75 @@
 /// <reference types='vitest' />
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv, ProxyOptions } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
+import process from 'process';
+import { ENV_MODE_CONST } from './src/app/constants/constants';
+import { DEV_ENV_SCHEMA } from './src/app/models/EnvModel';
 
-export default defineConfig({
-  root: __dirname,
-  cacheDir: '../../node_modules/.vite/apps/food-app',
+export default defineConfig(({mode}) => {
+  let proxy: Record<string, string | ProxyOptions> | undefined;
 
-  server: {
-    port: 4200,
-    host: 'localhost',
-  },
+  if (mode === ENV_MODE_CONST.development) {
+    const env = DEV_ENV_SCHEMA.safeParse(loadEnv(mode, process.cwd()));
 
-  preview: {
-    port: 4300,
-    host: 'localhost',
-  },
+    if (!env.success) {
+      throw Error(
+        '\n' + env.error.errors.map((error) => error.message).join('\n')
+      );
+    }
 
-  plugins: [react(), nxViteTsPaths()],
+    proxy = {
+      '/api': {
+        target: `${env.data.VITE_DEV_SERVER_PROTOCOL}://${env.data.VITE_DEV_SERVER_DOMAIN}`,
+        changeOrigin: true,
+        secure: false,
+      },
+    };
+  }
 
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [ nxViteTsPaths() ],
-  // },
+  return {
+    root: __dirname,
+    cacheDir: '../../node_modules/.vite/apps/food-app',
 
-  build: {
-    outDir: '../../dist/apps/food-app',
-    reportCompressedSize: true,
-    commonjsOptions: {
-      transformMixedEsModules: true,
+    server: {
+      port: 4200,
+      host: '0.0.0.0',
+      proxy,
     },
-  },
 
-  test: {
-    globals: true,
-    cache: {
-      dir: '../../node_modules/.vitest',
+    preview: {
+      port: 4300,
+      host: 'localhost',
     },
-    environment: 'jsdom',
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
 
-    reporters: ['default'],
-    coverage: {
-      reportsDirectory: '../../coverage/apps/food-app',
-      provider: 'v8',
+    plugins: [react(), nxViteTsPaths()],
+
+    // Uncomment this if you are using workers.
+    // worker: {
+    //  plugins: [ nxViteTsPaths() ],
+    // },
+
+    build: {
+      outDir: '../../dist/apps/food-app',
+      reportCompressedSize: true,
+      commonjsOptions: {
+        transformMixedEsModules: true,
+      },
     },
-  },
+
+    test: {
+      globals: true,
+      cache: {
+        dir: '../../node_modules/.vitest',
+      },
+      environment: 'jsdom',
+      include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+
+      reporters: ['default'],
+      coverage: {
+        reportsDirectory: '../../coverage/apps/food-app',
+        provider: 'v8',
+      },
+    },
+  }
 });
