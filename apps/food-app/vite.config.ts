@@ -6,8 +6,8 @@ import process from 'process';
 import { ENV_MODE_CONST } from './src/app/constants/constants';
 import { DEV_ENV_SCHEMA } from './src/app/models/EnvModel';
 import viteBasicSslPlugin from '@vitejs/plugin-basic-ssl';
-import { TanStackRouterVite } from '@tanstack/router-vite-plugin'
-
+import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
+import { join } from 'path';
 
 export default defineConfig(({ mode }) => {
   let proxy: Record<string, string | ProxyOptions> | undefined;
@@ -45,7 +45,15 @@ export default defineConfig(({ mode }) => {
       host: 'localhost',
     },
 
-    plugins: [react(), viteBasicSslPlugin(), nxViteTsPaths(), TanStackRouterVite()],
+    plugins: [
+      react(),
+      viteBasicSslPlugin(),
+      nxViteTsPaths(),
+      TanStackRouterVite({
+        routesDirectory: join(__dirname, 'src', 'app', 'router'),
+        generatedRouteTree: join(__dirname, 'src', 'app', 'routeTree.gen.ts'),
+      }),
+    ],
 
     // Uncomment this if you are using workers.
     // worker: {
