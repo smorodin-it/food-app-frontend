@@ -1,0 +1,19 @@
+.BaseCrudTable {
+  width: 100%;
+
+  &-TableWrapper {
+    padding-bottom: 0.8rem;
+
+    overflow: auto;
+  }
+
+  &-Row {
+    &_clickable {
+      cursor: pointer;
+    }
+  }
+
+  & &-NoData {
+    text-align: center;
+  }
+}
