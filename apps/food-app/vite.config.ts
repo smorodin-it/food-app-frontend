@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => {
       '/api': {
         target: `${env.data.VITE_DEV_SERVER_PROTOCOL}://${env.data.VITE_DEV_SERVER_DOMAIN}:${env.data.VITE_DEV_SERVER_PORT}`,
         changeOrigin: true,
-        secure: false,
+        cookieDomainRewrite: 'localhost',
       },
     };
   }
