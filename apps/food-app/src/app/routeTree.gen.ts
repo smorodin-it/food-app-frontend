@@ -13,24 +13,24 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './router/__root'
-import { Route as SignInImport } from './router/sign-in'
 
 // Create Virtual Routes
 
+const SignInLazyImport = createFileRoute('/sign-in')()
 const IngredientsLazyImport = createFileRoute('/ingredients')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
+const SignInLazyRoute = SignInLazyImport.update({
+  path: '/sign-in',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./router/sign-in.lazy').then((d) => d.Route))
+
 const IngredientsLazyRoute = IngredientsLazyImport.update({
   path: '/ingredients',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./router/ingredients.lazy').then((d) => d.Route))
-
-const SignInRoute = SignInImport.update({
-  path: '/sign-in',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -45,12 +45,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
-    '/sign-in': {
-      preLoaderRoute: typeof SignInImport
-      parentRoute: typeof rootRoute
-    }
     '/ingredients': {
       preLoaderRoute: typeof IngredientsLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/sign-in': {
+      preLoaderRoute: typeof SignInLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -60,8 +60,8 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
-  SignInRoute,
   IngredientsLazyRoute,
+  SignInLazyRoute,
 ])
 
 /* prettier-ignore-end */
