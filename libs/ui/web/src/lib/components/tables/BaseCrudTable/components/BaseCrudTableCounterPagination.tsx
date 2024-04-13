@@ -3,12 +3,12 @@ import { cn } from '@bem-react/classname';
 import { Fade, Stack } from '@mui/material';
 import { observer } from 'mobx-react-lite';
 
-import { PaginationComponent } from '../../../surfaces';
 import { BaseCrudTableStore } from '../stores';
 
 import { BaseCrudTableSelectedCounter } from './BaseCrudTableSelectedCounter';
 
 import '../styles/BaseCrudTableCounterPagination.scss';
+import { PaginationComponent } from '../../../elements';
 
 const cnBaseCrudTableCounterPagination = cn('BaseCrudTableCounterPagination');
 

@@ -14,7 +14,7 @@ import {
   MinimalDataModel,
   ResponsePaginated,
   useCrudTableHook,
-} from '../../../../hooks/useCrudTableHook';
+} from '../../../../hooks';
 
 import { BaseCrudTableCheckboxCell } from './BaseCrudTableCheckboxCell';
 import { BaseCrudTableSelectAllCheckbox } from './BaseCrudTableSelectAllCheckbox';
