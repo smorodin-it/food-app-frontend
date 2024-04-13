@@ -12,13 +12,13 @@ const cnTextFieldFormComponent = cn('TextFieldFormComponent');
 
 type TextFieldFormComponentProps = Omit<
   ComponentProps<typeof TextFieldCounted>,
-  keyof ControllerRenderProps
+  Exclude<keyof ControllerRenderProps, 'disabled'>
 > & { name: string };
 
 export const TextFieldFormComponent: FC<TextFieldFormComponentProps> = (
   props
 ) => {
-  const { name, ...rest } = props;
+  const { name, disabled, ...rest } = props;
 
   const {
     control,
@@ -31,6 +31,7 @@ export const TextFieldFormComponent: FC<TextFieldFormComponentProps> = (
     <Controller
       control={control}
       name={name}
+      disabled={disabled}
       render={({ field }) => (
         <TextFieldCounted
           {...rest}

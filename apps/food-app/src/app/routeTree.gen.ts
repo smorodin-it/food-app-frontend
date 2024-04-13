@@ -13,20 +13,20 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './router/__root'
+import { Route as SignInImport } from './router/sign-in'
 import { Route as AuthImport } from './router/_auth'
 
 // Create Virtual Routes
 
-const SignInLazyImport = createFileRoute('/sign-in')()
 const AuthIndexLazyImport = createFileRoute('/_auth/')()
 const AuthIngredientsLazyImport = createFileRoute('/_auth/ingredients')()
 
 // Create/Update Routes
 
-const SignInLazyRoute = SignInLazyImport.update({
+const SignInRoute = SignInImport.update({
   path: '/sign-in',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./router/sign-in.lazy').then((d) => d.Route))
+} as any)
 
 const AuthRoute = AuthImport.update({
   id: '/_auth',
@@ -54,7 +54,7 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof rootRoute
     }
     '/sign-in': {
-      preLoaderRoute: typeof SignInLazyImport
+      preLoaderRoute: typeof SignInImport
       parentRoute: typeof rootRoute
     }
     '/_auth/ingredients': {
@@ -72,7 +72,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   AuthRoute.addChildren([AuthIngredientsLazyRoute, AuthIndexLazyRoute]),
-  SignInLazyRoute,
+  SignInRoute,
 ])
 
 /* prettier-ignore-end */

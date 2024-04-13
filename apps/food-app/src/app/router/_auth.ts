@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-
-const isAuth = true;
+import { RootState, store } from '@food-frontend/data-access';
 
 export const Route = createFileRoute('/_auth')({
   beforeLoad: (opts) => {
+    const isAuth = (store.getState() as RootState).auth.isAuth;
     if (!isAuth) {
       throw redirect({
         to: '/sign-in',

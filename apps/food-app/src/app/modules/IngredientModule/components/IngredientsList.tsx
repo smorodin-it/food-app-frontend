@@ -1,5 +1,6 @@
 import { FC } from 'react';
 import { cn } from '@bem-react/classname';
+import { useListQuery } from '@food-frontend/data-access';
 
 // import './styles/IngredientsList.scss';
 
@@ -10,9 +11,15 @@ interface IngredientsListProps {
 }
 
 export const IngredientsList: FC<IngredientsListProps> = (props) => {
-  return (
+  const { data, isLoading } = useListQuery();
+
+  console.log(data);
+
+  return isLoading ? (
+    <div>Loading...</div>
+  ) : (
     <div className={cnIngredientsList(undefined, [props.className])}>
-      IngredientsList
+      <pre>{JSON.stringify(data, undefined, 2)}</pre>
     </div>
   );
 };
