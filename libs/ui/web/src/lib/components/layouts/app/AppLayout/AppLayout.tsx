@@ -1,10 +1,11 @@
-import { FC, ReactNode } from 'react';
+import { FC } from 'react';
 import { cn } from '@bem-react/classname';
 
 import './styles/AppLayout.scss';
 import { Header } from '../Header';
 import { Footer } from '../Footer';
 import { Outlet } from '@tanstack/react-router';
+import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 
 const cnAppLayout = cn('AppLayout');
 
@@ -20,6 +21,7 @@ export const AppLayout: FC<AppLayoutProps> = (props) => {
         <Outlet />
       </main>
       <Footer />
+      <TanStackRouterDevtools />
     </div>
   );
 };

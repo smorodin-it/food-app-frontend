@@ -13,12 +13,24 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './router/__root'
+import { Route as SignInImport } from './router/sign-in'
 
 // Create Virtual Routes
 
+const IngredientsLazyImport = createFileRoute('/ingredients')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const IngredientsLazyRoute = IngredientsLazyImport.update({
+  path: '/ingredients',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./router/ingredients.lazy').then((d) => d.Route))
+
+const SignInRoute = SignInImport.update({
+  path: '/sign-in',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -33,11 +45,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/sign-in': {
+      preLoaderRoute: typeof SignInImport
+      parentRoute: typeof rootRoute
+    }
+    '/ingredients': {
+      preLoaderRoute: typeof IngredientsLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexLazyRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexLazyRoute,
+  SignInRoute,
+  IngredientsLazyRoute,
+])
 
 /* prettier-ignore-end */
