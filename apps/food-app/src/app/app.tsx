@@ -1,10 +1,8 @@
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-
-// Import the generated route tree
+import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { DefaultTheme } from '@food-frontend/ui';
 
-// Create a new router instance
 const router = createRouter({ routeTree });
 
 // Register the router instance for type safety
@@ -16,7 +14,7 @@ declare module '@tanstack/react-router' {
 
 export function App() {
   return (
-    <ThemeProvider theme={createTheme()}>
+    <ThemeProvider theme={DefaultTheme}>
       <CssBaseline />
       <RouterProvider router={router} />
     </ThemeProvider>
