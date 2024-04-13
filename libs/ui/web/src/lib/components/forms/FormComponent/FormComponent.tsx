@@ -1,5 +1,10 @@
 import { FC, ReactNode } from 'react';
-import { FormProvider, UseFormReturn } from 'react-hook-form';
+import {
+  FieldValues,
+  FormProvider,
+  SubmitHandler,
+  UseFormReturn,
+} from 'react-hook-form';
 import { cn } from '@bem-react/classname';
 import { Stack } from '@mui/material';
 
@@ -8,8 +13,8 @@ import './styles/FormComponent.scss';
 const cnFormComponent = cn('FormComponent');
 
 interface FormComponentProps {
-  methods: UseFormReturn;
-  onSubmit: () => void;
+  methods: UseFormReturn<any>;
+  onSubmit: (data: any) => void;
   children: ReactNode | ReactNode[];
   className?: string;
 }
