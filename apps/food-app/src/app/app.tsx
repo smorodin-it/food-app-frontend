@@ -1,9 +1,10 @@
-import { RouterProvider, createRouter } from '@tanstack/react-router';
-
-// Import the generated route tree
+import { createRouter, RouterProvider } from '@tanstack/react-router';
 import { routeTree } from './routeTree.gen';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { DefaultTheme } from '@food-frontend/ui';
+import { Provider } from 'react-redux';
+import { store } from '@food-frontend/data-access';
 
-// Create a new router instance
 const router = createRouter({ routeTree });
 
 // Register the router instance for type safety
@@ -14,7 +15,14 @@ declare module '@tanstack/react-router' {
 }
 
 export function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={store}>
+      <ThemeProvider theme={DefaultTheme}>
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </Provider>
+  );
 }
 
 export default App;
