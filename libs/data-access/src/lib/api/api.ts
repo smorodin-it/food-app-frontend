@@ -27,8 +27,6 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  console.log(args);
-
   if (typeof args === 'object' && 'url' in args && args.url === '/auth') {
     const authToken = result?.meta?.response?.headers.get('Authorization');
 
@@ -42,18 +40,27 @@ const baseQueryWithReauth: BaseQueryFn<
 
   if (result.error && result.error.status === 401) {
     // try to get a new token
-    const refreshResult = await baseQuery('/auth/refresh', api, extraOptions);
+    const refreshResult = await baseQuery(
+      {
+        url: '/auth/refresh',
+        method: 'POST',
+      },
+      api,
+      extraOptions
+    );
     if (refreshResult) {
       const authToken =
-        refreshResult?.meta?.response?.headers.get('Authorized');
+        refreshResult?.meta?.response?.headers.get('Authorization');
 
       if (authToken) {
         // store the new token
         api.dispatch(setToken(authToken));
-      }
 
-      // retry the initial query
-      result = await baseQuery(args, api, extraOptions);
+        // retry the initial query
+        result = await baseQuery(args, api, extraOptions);
+      } else {
+        api.dispatch(clearAuth());
+      }
     } else {
       api.dispatch(clearAuth());
     }
@@ -64,6 +71,7 @@ const baseQueryWithReauth: BaseQueryFn<
 export const foodAppApi = createApi({
   reducerPath: 'foodApp',
   baseQuery: baseQueryWithReauth,
+  keepUnusedDataFor: 0,
   endpoints: (build) => ({
     authUser: build.mutation<string | null, AuthModel>({
       query: (arg) => ({
@@ -72,12 +80,10 @@ export const foodAppApi = createApi({
         body: arg,
       }),
     }),
-    list: build.query<IngredientListModel, void>({
+    listIngredients: build.query<IngredientListModel, void>({
       query: () => ({ url: '/ingredient' }),
-      // transformResponse: (response: { data: IngredientListModel }) =>
-      //   response.data,
     }),
   }),
 });
 
-export const { useAuthUserMutation, useListQuery } = foodAppApi;
+export const { useAuthUserMutation, useListIngredientsQuery } = foodAppApi;

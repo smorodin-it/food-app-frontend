@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { cn } from '@bem-react/classname';
-import { useListQuery } from '@food-frontend/data-access';
+import { useListIngredientsQuery } from '@food-frontend/data-access';
 
 // import './styles/IngredientsList.scss';
 
@@ -11,9 +11,11 @@ interface IngredientsListProps {
 }
 
 export const IngredientsList: FC<IngredientsListProps> = (props) => {
-  const { data, isLoading } = useListQuery();
+  const { data, isLoading, isError } = useListIngredientsQuery();
 
-  console.log(data);
+  if (isError) {
+    return <div>Error occurred</div>;
+  }
 
   return isLoading ? (
     <div>Loading...</div>
