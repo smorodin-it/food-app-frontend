@@ -43,30 +43,34 @@ const baseQueryWithReauth: BaseQueryFn<
   }
 
   if (result.error && result.error.status === HTTP_STATUS_CODES.unauthorized) {
-    // try to get a new token
-    const refreshResult = await baseQuery(
-      {
-        url: API_CONST.refreshRoute,
-        method: API_METHODS.post,
-      },
-      api,
-      extraOptions
-    );
-    if (refreshResult) {
-      const authToken = refreshResult?.meta?.response?.headers.get(
-        API_CONST.authHeader
+    try {
+      // try to get a new token
+      const refreshResult = await baseQuery(
+        {
+          url: API_CONST.refreshRoute,
+          method: API_METHODS.post,
+        },
+        api,
+        extraOptions
       );
+      if (refreshResult) {
+        const authToken = refreshResult?.meta?.response?.headers.get(
+          API_CONST.authHeader
+        );
 
-      if (authToken) {
-        // store the new token
-        api.dispatch(setToken(authToken));
+        if (authToken) {
+          // store the new token
+          api.dispatch(setToken(authToken));
 
-        // retry the initial query
-        result = await baseQuery(args, api, extraOptions);
+          // retry the initial query
+          result = await baseQuery(args, api, extraOptions);
+        } else {
+          api.dispatch(clearAuth());
+        }
       } else {
         api.dispatch(clearAuth());
       }
-    } else {
+    } catch {
       api.dispatch(clearAuth());
     }
   }
@@ -90,6 +94,33 @@ export const foodAppApi = createApi({
         url: API_CONST.refreshRoute,
         method: API_METHODS.post,
       }),
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const { meta } = await queryFulfilled;
+
+          if (
+            meta &&
+            'response' in meta &&
+            meta.response &&
+            typeof meta.response === 'object' &&
+            'headers' in meta.response &&
+            meta.response.headers instanceof Headers
+          ) {
+            const authToken = meta.response.headers.get(API_CONST.authHeader);
+
+            if (authToken) {
+              dispatch(setToken(authToken));
+              dispatch(setAuth(true));
+            } else {
+              dispatch(clearAuth());
+            }
+          } else {
+            dispatch(clearAuth());
+          }
+        } catch {
+          dispatch(clearAuth());
+        }
+      },
     }),
     listIngredients: build.query<IngredientListModel, void>({
       query: () => ({ url: '/ingredient' }),
