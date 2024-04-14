@@ -5,19 +5,19 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
-import { AuthModel, IngredientListModel } from '../models';
+import { AuthModel, IngredientListModel, ResponseStatusModel } from '../models';
 import { RootState } from '../stores';
 import { clearAuth, setAuth, setToken } from '../slices';
+import { API_CONST, API_METHODS, HTTP_STATUS_CODES } from '../constants';
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: '/api',
+  baseUrl: API_CONST.baseUrl,
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
     if (token) {
-      headers.set('Authorization', token);
+      headers.set(API_CONST.authHeader, token);
     }
   },
-  credentials: 'same-origin',
 });
 
 const baseQueryWithReauth: BaseQueryFn<
@@ -27,8 +27,12 @@ const baseQueryWithReauth: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (typeof args === 'object' && 'url' in args && args.url === '/auth') {
-    const authToken = result?.meta?.response?.headers.get('Authorization');
+  if (
+    typeof args === 'object' &&
+    'url' in args &&
+    args.url === API_CONST.authRoute
+  ) {
+    const authToken = result?.meta?.response?.headers.get(API_CONST.authHeader);
 
     if (authToken) {
       api.dispatch(setToken(authToken));
@@ -38,19 +42,20 @@ const baseQueryWithReauth: BaseQueryFn<
     }
   }
 
-  if (result.error && result.error.status === 401) {
+  if (result.error && result.error.status === HTTP_STATUS_CODES.unauthorized) {
     // try to get a new token
     const refreshResult = await baseQuery(
       {
-        url: '/auth/refresh',
-        method: 'POST',
+        url: API_CONST.refreshRoute,
+        method: API_METHODS.post,
       },
       api,
       extraOptions
     );
     if (refreshResult) {
-      const authToken =
-        refreshResult?.meta?.response?.headers.get('Authorization');
+      const authToken = refreshResult?.meta?.response?.headers.get(
+        API_CONST.authHeader
+      );
 
       if (authToken) {
         // store the new token
@@ -73,11 +78,17 @@ export const foodAppApi = createApi({
   baseQuery: baseQueryWithReauth,
   keepUnusedDataFor: 0,
   endpoints: (build) => ({
-    authUser: build.mutation<string | null, AuthModel>({
+    authUser: build.mutation<ResponseStatusModel, AuthModel>({
       query: (arg) => ({
-        url: '/auth',
-        method: 'POST',
+        url: API_CONST.authRoute,
+        method: API_METHODS.post,
         body: arg,
+      }),
+    }),
+    refreshTokens: build.mutation<ResponseStatusModel, void>({
+      query: () => ({
+        url: API_CONST.refreshRoute,
+        method: API_METHODS.post,
       }),
     }),
     listIngredients: build.query<IngredientListModel, void>({
