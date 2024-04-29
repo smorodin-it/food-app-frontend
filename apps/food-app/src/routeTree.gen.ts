@@ -14,7 +14,7 @@ import { Route as rootRoute } from './__root';
 import { Route as MainImport } from './main';
 import { Route as AppAppImport } from './app/app';
 import { Route as AppRouterIngredientsImport } from './app/router/ingredients';
-import { Route as AppRouterHomeImport } from './app/router/_auth.index.lazy';
+import { Route as AppRouterHomeImport } from './app/router/_auth.ingredients_.add.lazy';
 import { Route as AppRouterAppRouterImport } from './app/router/AppRouter';
 import { Route as AppModelsEnvModelImport } from './app/models/EnvModel';
 import { Route as AppConstantsConstantsImport } from './app/constants/constants';

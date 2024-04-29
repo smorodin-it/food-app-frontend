@@ -15,11 +15,12 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './router/__root'
 import { Route as SignInImport } from './router/sign-in'
 import { Route as AuthImport } from './router/_auth'
+import { Route as AuthIndexImport } from './router/_auth.index'
 
 // Create Virtual Routes
 
-const AuthIndexLazyImport = createFileRoute('/_auth/')()
 const AuthIngredientsLazyImport = createFileRoute('/_auth/ingredients')()
+const AuthIngredientsAddLazyImport = createFileRoute('/_auth/ingredients/add')()
 
 // Create/Update Routes
 
@@ -33,16 +34,23 @@ const AuthRoute = AuthImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const AuthIndexLazyRoute = AuthIndexLazyImport.update({
+const AuthIndexRoute = AuthIndexImport.update({
   path: '/',
   getParentRoute: () => AuthRoute,
-} as any).lazy(() => import('./router/_auth.index.lazy').then((d) => d.Route))
+} as any)
 
 const AuthIngredientsLazyRoute = AuthIngredientsLazyImport.update({
   path: '/ingredients',
   getParentRoute: () => AuthRoute,
 } as any).lazy(() =>
   import('./router/_auth.ingredients.lazy').then((d) => d.Route),
+)
+
+const AuthIngredientsAddLazyRoute = AuthIngredientsAddLazyImport.update({
+  path: '/ingredients/add',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./router/_auth.ingredients_.add.lazy').then((d) => d.Route),
 )
 
 // Populate the FileRoutesByPath interface
@@ -62,7 +70,11 @@ declare module '@tanstack/react-router' {
       parentRoute: typeof AuthImport
     }
     '/_auth/': {
-      preLoaderRoute: typeof AuthIndexLazyImport
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/ingredients/add': {
+      preLoaderRoute: typeof AuthIngredientsAddLazyImport
       parentRoute: typeof AuthImport
     }
   }
@@ -71,7 +83,11 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren([
-  AuthRoute.addChildren([AuthIngredientsLazyRoute, AuthIndexLazyRoute]),
+  AuthRoute.addChildren([
+    AuthIngredientsLazyRoute,
+    AuthIndexRoute,
+    AuthIngredientsAddLazyRoute,
+  ]),
   SignInRoute,
 ])
 
