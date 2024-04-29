@@ -1,17 +1,22 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { parseJwt } from '../utils/functions';
 
-type Payload = Record<string, unknown> | null;
+interface Payload extends Record<string, unknown> {
+  email: string;
+  exp: number;
+  id: string;
+}
 
 export interface AuthState {
   isAuth: boolean;
   token: string | null;
-  payload: Payload;
+  tokenPayload: Payload | null;
 }
 
 const initialState: AuthState = {
   isAuth: false,
   token: null,
-  payload: null,
+  tokenPayload: null,
 };
 
 export const authSlice = createSlice({
@@ -21,11 +26,9 @@ export const authSlice = createSlice({
     setAuth: (state, action: PayloadAction<boolean>) => {
       state.isAuth = action.payload;
     },
-    setPayload: (state, action: PayloadAction<Payload>) => {
-      state.payload = action.payload;
-    },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload;
+      state.tokenPayload = parseJwt<Payload>(action.payload);
     },
     setAuthUser: (state, action: PayloadAction<AuthState>) => {
       state = action.payload;
@@ -33,12 +36,11 @@ export const authSlice = createSlice({
     clearAuth: (state) => {
       state.isAuth = false;
       state.token = null;
-      state.payload = null;
+      state.tokenPayload = null;
     },
   },
 });
 
-export const { setAuth, setPayload, setToken, setAuthUser, clearAuth } =
-  authSlice.actions;
+export const { setAuth, setToken, setAuthUser, clearAuth } = authSlice.actions;
 
 export default authSlice.reducer;
