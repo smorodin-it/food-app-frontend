@@ -1,5 +1,24 @@
+@use '../../../../../assets/mixins' as m;
+
 .Header {
   background: var(--green-2);
   height: 4rem;
   margin-bottom: 1rem;
+
+  &-Container {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+
+    @include m.AdaptiveContentContainer;
+  }
+
+  &-Link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+
+    color: inherit;
+  }
 }

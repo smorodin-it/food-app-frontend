@@ -1,33 +1,30 @@
-import { FC } from 'react';
+import { ReactElement } from 'react';
 import { cn } from '@bem-react/classname';
 
 import './styles/AppLayout.scss';
 import { Header, HeaderLinkList } from '../Header';
 import { Footer } from '../Footer';
-import { Outlet } from '@tanstack/react-router';
+import { AnyRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
-import { Container } from '@mui/material';
 
 const cnAppLayout = cn('AppLayout');
 
-interface AppLayoutProps {
-  links: HeaderLinkList;
+interface AppLayoutProps<RouteTree extends AnyRoute> {
+  links: HeaderLinkList<RouteTree>;
   className?: string;
 }
 
-export const AppLayout: FC<AppLayoutProps> = (props) => {
+export function AppLayout<RouteTree extends AnyRoute>(
+  props: AppLayoutProps<RouteTree>
+): ReactElement {
   return (
     <div className={cnAppLayout(undefined, [props.className])}>
       <Header links={props.links} />
-      <Container
-        className={cnAppLayout('Main')}
-        component={'main'}
-        maxWidth={'xl'}
-      >
+      <main className={cnAppLayout('Main')}>
         <Outlet />
-      </Container>
+      </main>
       <Footer />
       <TanStackRouterDevtools />
     </div>
   );
-};
+}
