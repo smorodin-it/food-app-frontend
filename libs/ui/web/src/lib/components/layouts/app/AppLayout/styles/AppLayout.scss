@@ -4,9 +4,9 @@
   display: flex;
   flex-direction: column;
   height: 100svh;
+  background: var(--green-3);
 
   &-Main {
     flex-grow: 1;
-    background: var(--green-3);
   }
 }

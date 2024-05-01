@@ -7,6 +7,8 @@ import { store } from '@food-frontend/data-access';
 
 const router = createRouter({ routeTree });
 
+console.log(router.routeTree);
+
 // Register the router instance for type safety
 declare module '@tanstack/react-router' {
   interface Register {
