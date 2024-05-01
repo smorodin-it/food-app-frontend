@@ -1,6 +1,14 @@
 import { FC } from 'react';
 import { cn } from '@bem-react/classname';
-import { useListIngredientsQuery } from '@food-frontend/data-access';
+import {
+  IngredientListItemModel,
+  useListIngredientsQuery,
+} from '@food-frontend/data-access';
+import {
+  BaseCrudTable,
+  CrudTableActions,
+  CrudTableSettings,
+} from '@food-frontend/ui';
 
 // import './styles/IngredientsList.scss';
 
@@ -13,15 +21,42 @@ interface IngredientsListProps {
 export const IngredientsList: FC<IngredientsListProps> = (props) => {
   const { data, isLoading, isError } = useListIngredientsQuery();
 
+  const tableSettings: CrudTableSettings<IngredientListItemModel> = {
+    actions: [
+      {
+        type: CrudTableActions.Top,
+        renderComponent: () => <button>Добавить</button>,
+      },
+    ],
+    fields: [
+      {
+        header: 'Наименование',
+        render: (object) => object.name,
+      },
+      {
+        header: 'Производитель',
+        render: (object) => object.manufacturer,
+      },
+      {
+        header: 'Калорийность',
+        render: (object) => object.calories,
+      },
+    ],
+  };
+
   if (isError) {
     return <div>Error occurred</div>;
   }
 
-  return isLoading ? (
-    <div>Loading...</div>
-  ) : (
+  return !isLoading && data ? (
     <div className={cnIngredientsList(undefined, [props.className])}>
-      <pre>{JSON.stringify(data, undefined, 2)}</pre>
+      <BaseCrudTable
+        settings={tableSettings}
+        data={{ list: data, count: data.length }}
+        currentPage={1}
+      />
     </div>
+  ) : (
+    <div>Loading...</div>
   );
 };
