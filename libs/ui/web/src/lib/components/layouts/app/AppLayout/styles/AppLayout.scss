@@ -11,6 +11,10 @@
     width: 100%;
     flex-grow: 1;
 
+    overflow: auto;
+
+    padding-bottom: 5rem;
+
     @include m.AdaptiveContentContainer;
   }
 }
