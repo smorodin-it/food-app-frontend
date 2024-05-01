@@ -17,7 +17,6 @@ import {
 import { RootState } from '../stores';
 import { clearAuth, setAuth, setToken } from '../slices';
 import { API_CONST, API_METHODS, HTTP_STATUS_CODES } from '../constants';
-import { build } from 'vite';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_CONST.baseUrl,
