@@ -6,10 +6,10 @@ export const IngredientSchema = z
     name: z.string(),
     manufacturer: z.string(),
     barcode: z.string(),
-    proteins: z.string(),
-    carbs: z.string(),
-    fats: z.string(),
-    calories: z.string(),
+    proteins: z.coerce.number(),
+    carbs: z.coerce.number(),
+    fats: z.coerce.number(),
+    calories: z.coerce.number(),
   })
   .strict();
 
@@ -22,3 +22,9 @@ export type IngredientListItemModel = z.infer<typeof IngredientListItemSchema>;
 export const IngredientListSchema = z.array(IngredientListItemSchema);
 
 export type IngredientListModel = z.infer<typeof IngredientListSchema>;
+
+export const IngredientAddEditSchema = IngredientSchema.omit({
+  id: true,
+});
+
+export type IngredientAddEditModel = z.infer<typeof IngredientAddEditSchema>;

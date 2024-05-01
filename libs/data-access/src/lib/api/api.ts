@@ -5,7 +5,13 @@ import {
   fetchBaseQuery,
   FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
-import { AuthModel, IngredientListModel, ResponseStatusModel } from '../models';
+import {
+  AuthModel,
+  IngredientAddEditModel,
+  IngredientListModel,
+  ResponseAddModel,
+  ResponseStatusModel,
+} from '../models';
 import { RootState } from '../stores';
 import { clearAuth, setAuth, setToken } from '../slices';
 import { API_CONST, API_METHODS, HTTP_STATUS_CODES } from '../constants';
@@ -125,7 +131,18 @@ export const foodAppApi = createApi({
     listIngredients: build.query<IngredientListModel, void>({
       query: () => ({ url: '/ingredient' }),
     }),
+    addIngredient: build.mutation<ResponseAddModel, IngredientAddEditModel>({
+      query: (arg) => ({
+        url: '/ingredient',
+        method: API_METHODS.post,
+        body: arg,
+      }),
+    }),
   }),
 });
 
-export const { useAuthUserMutation, useListIngredientsQuery } = foodAppApi;
+export const {
+  useAuthUserMutation,
+  useListIngredientsQuery,
+  useAddIngredientMutation,
+} = foodAppApi;

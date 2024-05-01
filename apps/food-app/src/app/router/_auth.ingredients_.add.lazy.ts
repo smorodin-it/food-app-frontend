@@ -1,6 +1,6 @@
 import { createLazyFileRoute } from '@tanstack/react-router';
-import { BarcodeScanner } from '@food-frontend/ui';
+import { IngredientAddForm } from '../modules/IngredientModule/forms/IngredientAddForm';
 
 export const Route = createLazyFileRoute('/_auth/ingredients/add')({
-  component: BarcodeScanner,
+  component: IngredientAddForm,
 });
