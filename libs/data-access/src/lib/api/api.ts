@@ -7,14 +7,17 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import {
   AuthModel,
-  IngredientAddEditModel,
+  IngredientAddModel,
+  IngredientEditModel,
   IngredientListModel,
+  IngredientModel,
   ResponseAddModel,
   ResponseStatusModel,
 } from '../models';
 import { RootState } from '../stores';
 import { clearAuth, setAuth, setToken } from '../slices';
 import { API_CONST, API_METHODS, HTTP_STATUS_CODES } from '../constants';
+import { build } from 'vite';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_CONST.baseUrl,
@@ -131,11 +134,21 @@ export const foodAppApi = createApi({
     listIngredients: build.query<IngredientListModel, void>({
       query: () => ({ url: '/ingredient' }),
     }),
-    addIngredient: build.mutation<ResponseAddModel, IngredientAddEditModel>({
+    addIngredient: build.mutation<ResponseAddModel, IngredientAddModel>({
       query: (arg) => ({
         url: '/ingredient',
         method: API_METHODS.post,
         body: arg,
+      }),
+    }),
+    retrieveIngredient: build.query<IngredientModel, string>({
+      query: (id) => ({ url: `/ingredient/${id}` }),
+    }),
+    updateIngredient: build.mutation<ResponseStatusModel, IngredientEditModel>({
+      query: ({ id, ...put }) => ({
+        url: `/ingredient/${id}`,
+        method: API_METHODS.put,
+        body: put,
       }),
     }),
   }),
@@ -145,4 +158,6 @@ export const {
   useAuthUserMutation,
   useListIngredientsQuery,
   useAddIngredientMutation,
+  useRetrieveIngredientQuery,
+  useUpdateIngredientMutation,
 } = foodAppApi;

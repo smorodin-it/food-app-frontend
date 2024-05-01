@@ -23,8 +23,12 @@ export const IngredientListSchema = z.array(IngredientListItemSchema);
 
 export type IngredientListModel = z.infer<typeof IngredientListSchema>;
 
-export const IngredientAddEditSchema = IngredientSchema.omit({
+export const IngredientAddSchema = IngredientSchema.omit({
   id: true,
 });
 
-export type IngredientAddEditModel = z.infer<typeof IngredientAddEditSchema>;
+export type IngredientAddModel = z.infer<typeof IngredientAddSchema>;
+
+export const IngredientEditSchema = IngredientSchema;
+
+export type IngredientEditModel = z.infer<typeof IngredientEditSchema>;

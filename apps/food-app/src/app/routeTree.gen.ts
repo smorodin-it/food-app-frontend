@@ -21,6 +21,9 @@ import { Route as AuthIndexImport } from './router/_auth.index'
 
 const AuthIngredientsLazyImport = createFileRoute('/_auth/ingredients')()
 const AuthIngredientsAddLazyImport = createFileRoute('/_auth/ingredients/add')()
+const AuthIngredientsIngredientIdLazyImport = createFileRoute(
+  '/_auth/ingredients/$ingredientId',
+)()
 
 // Create/Update Routes
 
@@ -53,6 +56,16 @@ const AuthIngredientsAddLazyRoute = AuthIngredientsAddLazyImport.update({
   import('./router/_auth.ingredients_.add.lazy').then((d) => d.Route),
 )
 
+const AuthIngredientsIngredientIdLazyRoute =
+  AuthIngredientsIngredientIdLazyImport.update({
+    path: '/ingredients/$ingredientId',
+    getParentRoute: () => AuthRoute,
+  } as any).lazy(() =>
+    import('./router/_auth.ingredients_.$ingredientId.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -73,6 +86,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthIndexImport
       parentRoute: typeof AuthImport
     }
+    '/_auth/ingredients/$ingredientId': {
+      preLoaderRoute: typeof AuthIngredientsIngredientIdLazyImport
+      parentRoute: typeof AuthImport
+    }
     '/_auth/ingredients/add': {
       preLoaderRoute: typeof AuthIngredientsAddLazyImport
       parentRoute: typeof AuthImport
@@ -86,6 +103,7 @@ export const routeTree = rootRoute.addChildren([
   AuthRoute.addChildren([
     AuthIngredientsLazyRoute,
     AuthIndexRoute,
+    AuthIngredientsIngredientIdLazyRoute,
     AuthIngredientsAddLazyRoute,
   ]),
   SignInRoute,

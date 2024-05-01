@@ -2,9 +2,9 @@ import { FC } from 'react';
 import { cn } from '@bem-react/classname';
 import { useForm } from 'react-hook-form';
 import {
-  getIngredientAddEditFormDefaultValues,
-  IngredientAddEditModel,
-  IngredientAddEditSchema,
+  getIngredientAddFormDefaultValues,
+  IngredientAddModel,
+  IngredientAddSchema,
   useAddIngredientMutation,
 } from '@food-frontend/data-access';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,21 +21,24 @@ interface IngredientAddFormProps {
 }
 
 export const IngredientAddForm: FC<IngredientAddFormProps> = (props) => {
-  const methods = useForm<IngredientAddEditModel>({
-    defaultValues: getIngredientAddEditFormDefaultValues(),
-    resolver: zodResolver(IngredientAddEditSchema),
+  const methods = useForm<IngredientAddModel>({
+    defaultValues: getIngredientAddFormDefaultValues(),
+    resolver: zodResolver(IngredientAddSchema),
   });
 
   const [addIngredient] = useAddIngredientMutation();
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (data: IngredientAddEditModel): Promise<void> => {
+  const handleSubmit = async (data: IngredientAddModel): Promise<void> => {
     const resp = await addIngredient(data).unwrap();
 
     if (resp) {
       await navigate({
-        to: '/ingredients/add',
+        to: `/ingredients/$ingredientId`,
+        params: {
+          ingredientId: resp.id,
+        },
       });
     }
   };
